@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   test:
-    runs-on: self-hosted
+    runs-on: self-hosted  # Use self-hosted unless your runner is named differently
 
     steps:
     - name: Checkout code
@@ -17,7 +17,11 @@ jobs:
 
     - name: Install dependencies (if any)
       run: |
-        pip install -r requirements.txt || true  # ignore if no requirements.txt
+        if [ -f requirements.txt ]; then
+          pip install -r requirements.txt
+        else
+          echo "No requirements.txt found, skipping dependency installation."
+        fi
 
     - name: Run unit tests
       run: |
