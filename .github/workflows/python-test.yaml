@@ -1,28 +1,28 @@
-name: Python Test
+name: My First GitHub Actions
 
 on: [push]
 
 jobs:
-  test:
-    runs-on: self-hosted  # Use self-hosted unless your runner is named differently
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9]
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
+    - uses: actions/checkout@v3
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v2
       with:
-        python-version: '3.11'
+        python-version: ${{ matrix.python-version }}
 
-    - name: Install dependencies (if any)
+    - name: Install dependencies
       run: |
-        if [ -f requirements.txt ]; then
-          pip install -r requirements.txt
-        else
-          echo "No requirements.txt found, skipping dependency installation."
-        fi
+        python -m pip install --upgrade pip
+        pip install pytest
 
-    - name: Run unit tests
+    - name: Run tests
       run: |
-        python -m unittest discover
+        cd src
+        python -m pytest addition.py
